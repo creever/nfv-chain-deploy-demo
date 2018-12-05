@@ -1,0 +1,31 @@
+{
+  "name": "nfv-chain-deploy-demo",
+  "version": "1.0.0",
+  "private": true,
+  "repository": "https://github.com/creever/nfv-chain-deploy-demo.git",
+  "author": "Creever <istvan.kispal@clapp.eu>",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "start": "webpack-dev-server --content-base src --hot --inline"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.119",
+    "css-loader": "^1.0.1",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "html-webpack-plugin": "^3.2.0",
+    "node-sass": "^4.10.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^5.3.1",
+    "typescript": "^3.2.1",
+    "webpack": "^4.27.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11"
+  }
+}
