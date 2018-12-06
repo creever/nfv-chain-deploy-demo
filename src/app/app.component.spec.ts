@@ -1,6 +1,14 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import {Component} from "@angular/core";
+
+
+@Component({selector: 'app-navigation', template: ''})
+class NavigationStubComponent {}
+
+@Component({selector: 'app-nfv-layout', template: ''})
+class NfvLayoutStubComponent { }
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -9,7 +17,9 @@ describe('AppComponent', () => {
         RouterTestingModule
       ],
       declarations: [
-        AppComponent
+        AppComponent,
+        NavigationStubComponent,
+        NfvLayoutStubComponent
       ],
     }).compileComponents();
   }));
@@ -29,7 +39,5 @@ describe('AppComponent', () => {
   it('should render title in a h1 tag', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to nfv-chain-deploy-demo!');
   });
 });

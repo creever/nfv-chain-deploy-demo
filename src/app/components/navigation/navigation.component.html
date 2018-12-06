@@ -1,3 +1,30 @@
-<p>
-  navigation works!
-</p>
+<header>
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#">NFV DEPLOY CHAIN DEMO</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <form class="form-inline mt-2 mt-md-0">
+        <input class="form-control mr-sm-2" type="text" placeholder="Server" aria-label="Server">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Set</button>
+      </form>
+      <form class="form-inline mt-2 mt-md-0 ml-2 mr-auto">
+        <input class="form-control mr-sm-2" type="text" placeholder="VNF" aria-label="VNF">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Set</button>
+      </form>
+
+      <ul class="navbar-nav align-items-end">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Current step: 5/100</a>
+        </li>
+        <li class="nav-item mr-2">
+          <button class="btn btn-outline-success">Next step</button>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-outline-success">Play</button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>

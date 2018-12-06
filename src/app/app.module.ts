@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
-import { BipariteGraphComponent } from './components/biparite-graph/biparite-graph.component';
+import { BipartiteGraphComponent } from './components/bipartite-graph/bipartite-graph.component';
 import { NfvLayoutComponent } from './components/nfv-layout/nfv-layout.component';
 import { DeploymentChainComponent } from './components/deployment-chain/deployment-chain.component';
 
@@ -12,7 +12,7 @@ import { DeploymentChainComponent } from './components/deployment-chain/deployme
   declarations: [
     AppComponent,
     NavigationComponent,
-    BipariteGraphComponent,
+    BipartiteGraphComponent,
     NfvLayoutComponent,
     DeploymentChainComponent
   ],

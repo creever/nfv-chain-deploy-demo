@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BipariteGraphComponent } from './biparite-graph.component';
+import { BipartiteGraphComponent } from './bipartite-graph.component';
 
-describe('BipariteGraphComponent', () => {
-  let component: BipariteGraphComponent;
-  let fixture: ComponentFixture<BipariteGraphComponent>;
+describe('BipartiteGraphComponent', () => {
+  let component: BipartiteGraphComponent;
+  let fixture: ComponentFixture<BipartiteGraphComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BipariteGraphComponent ]
+      declarations: [ BipartiteGraphComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BipariteGraphComponent);
+    fixture = TestBed.createComponent(BipartiteGraphComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
