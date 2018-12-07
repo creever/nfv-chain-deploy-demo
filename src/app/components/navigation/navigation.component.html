@@ -16,13 +16,16 @@
 
       <ul class="navbar-nav align-items-end">
         <li class="nav-item">
-          <a class="nav-link" href="#">Current step: 5/100</a>
+          <span class="nav-link">Current step: {{ ds.currentStep$ | async }}</span>
         </li>
         <li class="nav-item mr-2">
-          <button class="btn btn-outline-success">Next step</button>
+          <button class="btn btn-outline-success" (click)="nextStep()">Next step</button>
+        </li>
+        <li class="nav-item mr-2">
+          <button class="btn btn-outline-success" (click)="play()">{{ !ds.isPlaying ? 'Play' : 'Stop' }}</button>
         </li>
         <li class="nav-item">
-          <button class="btn btn-outline-success">Play</button>
+          <button class="btn btn-outline-success" (click)="ds.reset()" [disabled]="ds.isInInitState">Reset</button>
         </li>
       </ul>
     </div>

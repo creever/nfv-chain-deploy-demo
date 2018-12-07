@@ -1,3 +1,12 @@
-<p>
-  deployment-chain works!
-</p>
+<div class="servers">
+  <div class="server" *ngFor="let server of servers | async">
+    <div class="title">{{ server.name }}</div>
+    <div class="vnf-list" *ngIf="server.vnfs.length">
+      <app-vnf class="vnf" *ngFor="let vnf of server.vnfs" [data]="vnf"></app-vnf>
+    </div>
+  </div>
+</div>
+
+<div class="chain">
+  <app-vnf class="vnf" *ngFor="let vnf of chain | async" [data]="vnf"></app-vnf>
+</div>

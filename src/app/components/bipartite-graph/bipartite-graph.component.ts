@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
   selector: 'app-bipartite-graph',
   templateUrl: './bipartite-graph.component.html',
-  styleUrls: ['./bipartite-graph.component.scss']
+  styleUrls: ['./bipartite-graph.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BipartiteGraphComponent implements OnInit {
 
@@ -38,8 +39,8 @@ export class BipartiteGraphComponent implements OnInit {
 
   loadForceDirectedGraph() {
     this.svg = d3.select('svg');
-    this.width = 300; // +this.svg.attr('width');
-    this.height = 500; // +this.svg.attr('height');
+    this.width = 200; // +this.svg.attr('width');
+    this.height = 400; // +this.svg.attr('height');
     this.color = d3.scaleOrdinal(d3.schemeCategory10);
 
     this.simulation = d3.forceSimulation()

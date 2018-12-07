@@ -7,6 +7,7 @@ import { NavigationComponent } from './components/navigation/navigation.componen
 import { BipartiteGraphComponent } from './components/bipartite-graph/bipartite-graph.component';
 import { NfvLayoutComponent } from './components/nfv-layout/nfv-layout.component';
 import { DeploymentChainComponent } from './components/deployment-chain/deployment-chain.component';
+import { VnfComponent } from './components/deployment-chain/vnf/vnf.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { DeploymentChainComponent } from './components/deployment-chain/deployme
     NavigationComponent,
     BipartiteGraphComponent,
     NfvLayoutComponent,
-    DeploymentChainComponent
+    DeploymentChainComponent,
+    VnfComponent
   ],
   imports: [
     BrowserModule,
