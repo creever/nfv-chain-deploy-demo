@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable, Subscription, timer} from "rxjs";
+import {NfvEnvironmentService} from "./nfv-environment.service";
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class DemonstrationService {
   protected playing = false;
   protected inInitState = true;
 
-  constructor() { }
+  constructor(private ne: NfvEnvironmentService) { }
 
   nextStep() {
     if(this.inInitState) {
@@ -39,13 +40,16 @@ export class DemonstrationService {
 
   stop() {
     this.playing = false;
-    this.timer.unsubscribe();
+    if(this.timer) {
+      this.timer.unsubscribe();
+    }
   }
 
   reset() {
     this.stop();
     this.inInitState = true;
     this._currentStep.next(0);
+    this.ne.reset();
   }
 
   get currentStep$(): Observable<number> {

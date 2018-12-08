@@ -5,14 +5,12 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
-      <form class="form-inline mt-2 mt-md-0">
-        <input class="form-control mr-sm-2" type="text" placeholder="Server" aria-label="Server">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Set</button>
-      </form>
-      <form class="form-inline mt-2 mt-md-0 ml-2 mr-auto">
-        <input class="form-control mr-sm-2" type="text" placeholder="VNF" aria-label="VNF">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Set</button>
-      </form>
+      <div class="form-inline mt-2 mt-md-0">
+        <input class="form-control mr-sm-2" type="number" [formControl]="serverCount" placeholder="Server" aria-label="Server">
+      </div>
+      <div class="form-inline mt-2 mt-md-0 ml-2 mr-auto">
+        <input class="form-control mr-sm-2" type="number" [formControl]="chainLength" placeholder="VNF" aria-label="VNF">
+      </div>
 
       <ul class="navbar-nav align-items-end">
         <li class="nav-item">

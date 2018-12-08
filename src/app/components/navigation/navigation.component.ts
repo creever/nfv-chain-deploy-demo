@@ -1,5 +1,8 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {DemonstrationService} from "../../services/demonstration.service";
+import {FormControl} from "@angular/forms";
+import {Subscription} from "rxjs";
+import {NfvEnvironmentService} from "../../services/nfv-environment.service";
 
 @Component({
   selector: 'app-navigation',
@@ -7,12 +10,19 @@ import {DemonstrationService} from "../../services/demonstration.service";
   styleUrls: ['./navigation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NavigationComponent implements OnInit {
+export class NavigationComponent implements OnInit, OnDestroy {
 
   @Output() onNextStep: EventEmitter<any> = new EventEmitter();
   @Output() onPlay: EventEmitter<any> = new EventEmitter();
 
-  constructor(private ds: DemonstrationService) { }
+  serverCount: FormControl = new FormControl(3);
+  chainLength: FormControl = new FormControl(10);
+  subscriptions: Subscription = new Subscription();
+
+  constructor(private ds: DemonstrationService, private ne: NfvEnvironmentService) {
+    this.subscriptions.add(this.serverCount.valueChanges.subscribe(value => this.ne.setServerCount(value)));
+    this.subscriptions.add(this.chainLength.valueChanges.subscribe(value => this.ne.setChainLength(value)));
+  }
 
   ngOnInit() {
   }
@@ -25,6 +35,10 @@ export class NavigationComponent implements OnInit {
   nextStep() {
     this.onNextStep.next(null);
     this.ds.nextStep();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
 

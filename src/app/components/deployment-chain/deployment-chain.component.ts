@@ -1,8 +1,13 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
-import {Observable, of, Subscription} from "rxjs";
-import {Server} from "../../models/server";
-import {Vnf} from "../../models/vnf";
+import {ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from "rxjs";
 import {DemonstrationService} from "../../services/demonstration.service";
+import {NfvEnvironmentService} from "../../services/nfv-environment.service";
+
+export enum KEY_CODE {
+  RIGHT_ARROW = 39,
+  SPACE = 32,
+  ESC = 27
+}
 
 @Component({
   selector: 'app-deployment-chain',
@@ -12,26 +17,12 @@ import {DemonstrationService} from "../../services/demonstration.service";
 })
 export class DeploymentChainComponent implements OnInit, OnDestroy {
 
-  servers: Observable<Server[]> = of([
-    { name: 'server 1', vnfs: [{ name: 'vnf 1' }]},
-    { name: 'server 2', vnfs: []},
-    { name: 'server 3', vnfs: []}
-  ]);
-
-  chain: Observable<Vnf[]> = of([
-    { name: 'vnf 1' },
-    { name: 'vnf 2' },
-    { name: 'vnf 3' },
-    { name: 'vnf 4' },
-    { name: 'vnf 5' }
-  ]);
-
   subscriptions: Subscription = new Subscription();
 
-  constructor(public ds: DemonstrationService) {
+  constructor(public ds: DemonstrationService, public ne: NfvEnvironmentService) {
     this.subscriptions.add(
       ds.currentStep$.subscribe(step => {
-        console.log("step: ", step);
+        this.nextStep();
       }
     ));
   }
@@ -40,6 +31,12 @@ export class DeploymentChainComponent implements OnInit, OnDestroy {
     //console.log(this.getAllPartitions([], [1,2,3]));
     //this.Bell(5, console.log);
     this.init(4, [], []);
+  }
+
+  nextStep() {
+    const max = this.ne.serverCount-1;
+    const min = 0;
+    this.ne.moveNextVnfToServer(Math.floor(Math.random() * (max - min + 1)) + min );
   }
 
   private init(n: number, arr1: Array<number>, arr2: Array<number>) {

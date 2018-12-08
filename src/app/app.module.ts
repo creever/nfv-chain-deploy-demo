@@ -8,6 +8,7 @@ import { BipartiteGraphComponent } from './components/bipartite-graph/bipartite-
 import { NfvLayoutComponent } from './components/nfv-layout/nfv-layout.component';
 import { DeploymentChainComponent } from './components/deployment-chain/deployment-chain.component';
 import { VnfComponent } from './components/deployment-chain/vnf/vnf.component';
+import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { VnfComponent } from './components/deployment-chain/vnf/vnf.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
