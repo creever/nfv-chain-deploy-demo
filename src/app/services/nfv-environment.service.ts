@@ -43,7 +43,8 @@ export class NfvEnvironmentService {
     if(!this.dataStore.chain.length || 0 > index || index > this.dataStore.servers.length-1)
       return;
 
-    const nextVnf = this.dataStore.chain.pop();
+    let nextVnf = this.dataStore.chain.pop();
+    nextVnf.cost = Math.floor(Math.random() * 20) + 1;
     this.dataStore.servers[index].vnfs.push(nextVnf);
     this._servers.next([...this.dataStore.servers]);
     this._chain.next([...this.dataStore.chain]);

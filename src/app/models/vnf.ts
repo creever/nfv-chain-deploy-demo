@@ -1,3 +1,4 @@
 export interface Vnf {
-  name: string
+  name: string,
+  cost: number
 }
