@@ -22,6 +22,7 @@ export class BipartiteGraphComponent implements OnInit {
   data;
   force;
   label;
+  deployMap;
 
   ngOnInit() {
     console.log('D3.js version:', d3['version']);
@@ -56,23 +57,23 @@ export class BipartiteGraphComponent implements OnInit {
 
   updateGraph(servers) {
     this.data = this.initData();
-
+    
     servers.forEach((server, index) => {
       this.pushNode(server.name, 10);
       if (server.storedSubChains.length) {
-
         server.storedSubChains.forEach(subchain => {
           let subChainName = [];
           subchain.subChains.forEach(vnf => {
             subChainName.push(vnf.name);
           });
-
           const name = subChainName.join(" - ");
           this.pushNode(name, 20);
           this.pushLink(server.name, name, Math.ceil((subchain.cost + 1) / 20));
         });
       }
     });
+
+    this.getMin(servers);
 
     this.resetGraph();
     this.render(this.data);
@@ -100,6 +101,33 @@ export class BipartiteGraphComponent implements OnInit {
       'value': cost});
   }
 
+  getMin(servers) {
+    servers.forEach((server, index) => {
+      server.storedSubChains.forEach(e => {
+        let subChainName = [];
+        e.subChains.forEach(vnf => {
+          subChainName.push(vnf.name);
+        });
+        const name = subChainName.join(" - ");
+        
+        let result = this.data.links.filter(l => name === l.target)
+          let min = result[0];
+          result.forEach(x => {
+            if (min.value > x.value) {
+              min = x;
+            }
+          })
+          min['isMin'] = true;
+      });
+    });
+  }
+
+  addDeployMap(minEdge) {
+    if (!this.deployMap.find(e => e.target === minEdge.target)) {
+      this.deployMap.push(minEdge);
+    }
+  }
+
   render(data): void {
     this.link = this.svg.append('g')
       .attr('class', 'link')
@@ -107,7 +135,7 @@ export class BipartiteGraphComponent implements OnInit {
       .data(data.links)
       .enter()
       .append('line')
-      .attr('stroke', '#ccc')
+      .attr('stroke', (d) => d['isMin'] ? 'green' : 'gray')
       .attr('stroke-width', (d) => d['value']);
 
       this.node = this.svg.append('g')
