@@ -72,6 +72,7 @@ export class NfvEnvironmentService {
 
     let currentPartition;
     for(let i = 0; i < this.partitions.length; i++) {
+
       for (let j = 0; j < this.partitions[i].length; j++) {
         startStep++;
 
@@ -81,8 +82,17 @@ export class NfvEnvironmentService {
           console.log(step, currentPartition);
 
           for(let k = 0; k < this.dataStore.servers.length; k++) {
+
+            if(j == 0) {
+              this.dataStore.servers[k].storedSubChains = [];
+            }
+
             this.dataStore.servers[k].vnfs = [...currentPartition];
-            this.dataStore.servers[k].storedSubChains.push(currentPartition);
+            this.dataStore.servers[k].storedSubChains.push({subChains: currentPartition, cost: 0});
+
+            for(let l = 0; l < this.dataStore.servers[k].storedSubChains.length; l++){
+              this.dataStore.servers[k].storedSubChains[l]['cost'] = this.generateSwitchingCost(this.dataStore.servers[k].storedSubChains.length);
+            }
           }
 
           this._servers.next([...this.dataStore.servers]);
@@ -92,6 +102,8 @@ export class NfvEnvironmentService {
           this.partitions[i][j]['active'] = false;
         }
       }
+
+      console.log(this.dataStore.servers);
     }
 
     if (startStep < step) {

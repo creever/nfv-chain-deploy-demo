@@ -40,6 +40,7 @@ export class DeploymentChainComponent implements OnInit, OnDestroy {
         this.ds.isShowServers = false;
         this.ds.isShowPartitions = false;
         this.ds.navigationText = "Now we know the switching cost of each subschain of the servers";
+        this.ds.isShowGraph = false;
       }
     }
   }

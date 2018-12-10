@@ -16,8 +16,6 @@
 
   <div class="col-md-4">
 
-    <app-bipartite-graph *ngIf="ds.isShowGraph"></app-bipartite-graph>
-
     <div class="servers" *ngIf="ds.isShowServers">
       <div class="server" *ngFor="let server of ne.servers$ | async">
         <div class="title">{{ server.name }}</div>
@@ -26,5 +24,7 @@
         </div>
       </div>
     </div>
+
+    <app-bipartite-graph *ngIf="ds.isShowGraph"></app-bipartite-graph>
   </div>
 </div>

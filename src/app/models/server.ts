@@ -4,5 +4,5 @@ export interface Server {
   id: number,
   name: string,
   vnfs: Vnf[],
-  storedSubChains: Vnf[]
+  storedSubChains: {subChains: Vnf[], cost: number}[]
 }

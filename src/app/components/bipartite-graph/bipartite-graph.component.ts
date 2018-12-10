@@ -57,10 +57,18 @@ export class BipartiteGraphComponent implements OnInit {
 
     servers.forEach((server, index) => {
       this.pushNode(server.name, 10);
-      if (server.vnfs.length) {
-        server.vnfs.forEach(vnf => {
-          this.pushNode(vnf.name, 20);
-          this.pushLink(server.name, vnf.name, vnf.cost);
+      if (server.storedSubChains.length) {
+
+        server.storedSubChains.forEach(subchain => {
+          let subChainName = [];
+          subchain.subChains.forEach(vnf => {
+            subChainName.push(vnf.name);
+          });
+
+          const name = subChainName.join(" - ");
+          this.pushNode(name, 20);
+          console.log("link width:", Math.floor((subchain.cost + 10) / 10), subchain.cost);
+          this.pushLink(server.name, name, Math.floor((subchain.cost + 10) / 10));
         });
       }
     });
@@ -112,6 +120,16 @@ export class BipartiteGraphComponent implements OnInit {
         .on('drag', (d) => { return this.dragged(d); })
         .on('end', (d) => { return this.dragEnded(d); })
       );
+
+
+    console.log("node", this.node);
+    var lables = this.node.append("text")
+      .text(function(d) {
+        console.log("sadasdasd", d.id);
+        return d.id;
+      })
+      .attr('x', 6)
+      .attr('y', 3);
 
     this.node.append('text')
       .text((d) => { return d.id; });

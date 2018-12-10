@@ -52,6 +52,7 @@ export class DemonstrationService {
       this.isShowPartitions = true;
       this.isShowServers = true;
       this.isIteratingPartitions = true;
+      this.isShowGraph = true;
     }
 
 
