@@ -77,7 +77,6 @@ export class BipartiteGraphComponent implements OnInit {
 
     this.resetGraph();
     this.render(this.data);
-    this.ticked();
   }
 
   initData() {
@@ -162,10 +161,12 @@ export class BipartiteGraphComponent implements OnInit {
 
     this.simulation
       .nodes(data.nodes)
-      .on('tick', ()=>{ return this.ticked(); });
+      .on('tick', () => { return this.ticked(); });
 
     this.simulation.force('link')
       .links(data.links);
+
+    this.ticked();
   }
   ticked() {
     this.link
