@@ -95,7 +95,6 @@ export class NfvEnvironmentService {
     }
 
     if (startStep < step) {
-      console.log("asdasdaddsda");
       return {isOver: true};
     }
 

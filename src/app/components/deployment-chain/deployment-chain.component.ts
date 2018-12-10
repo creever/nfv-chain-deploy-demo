@@ -37,6 +37,9 @@ export class DeploymentChainComponent implements OnInit, OnDestroy {
     if(this.ds.isIteratingPartitions) {
       if(this.ne.moveNextVnfToServer(step).isOver) {
         this.ds.isIteratingPartitions = false;
+        this.ds.isShowServers = false;
+        this.ds.isShowPartitions = false;
+        this.ds.navigationText = "Now we know the switching cost of each subschain of the servers";
       }
     }
   }
