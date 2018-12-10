@@ -67,8 +67,7 @@ export class BipartiteGraphComponent implements OnInit {
 
           const name = subChainName.join(" - ");
           this.pushNode(name, 20);
-          console.log("link width:", Math.floor((subchain.cost + 10) / 10), subchain.cost);
-          this.pushLink(server.name, name, Math.floor((subchain.cost + 10) / 10));
+          this.pushLink(server.name, name, Math.ceil((subchain.cost + 1) / 20));
         });
       }
     });
