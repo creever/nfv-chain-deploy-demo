@@ -2,10 +2,11 @@
   <div class="col-md-8">
 
     <div class="partition-sets" *ngIf="ds.isShowPartitions">
-      <div class="partition-set clearfix" *ngFor="let partitionSet of ne.partitionSet">
+      <div class="partition-set clearfix" *ngFor="let partitionSet of ne.partitionSet; let i = index;">
         <div class="partition" *ngFor="let partition of partitionSet" [ngClass]="{'active' : partition.active}">
           <app-vnf class="vnf" *ngFor="let vnf of partition" [data]="vnf"></app-vnf>
         </div>
+        <div class="partition-data" *ngIf="ne.calculatedSwitchingCosts[i]">{{'{minimum cost flow of this partition: ' + ne.calculatedSwitchingCosts[i] + '}'}}</div>
       </div>
     </div>
 
