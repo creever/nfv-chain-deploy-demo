@@ -39,7 +39,8 @@ export class DeploymentChainComponent implements OnInit, OnDestroy {
         this.ds.isIteratingPartitions = false;
         this.ds.isShowServers = false;
         this.ds.isShowPartitions = false;
-        this.ds.navigationText = "Now we know the switching cost of each subschain of the servers";
+        this.ds.navigationText = "We get the minimum placement cost and we can generate a deploy-map based on the extracted solution from the Graph<br />" +
+          "Minimum cost is: " + this.ne.minimumCalculatedSwitchingCosts;
         this.ds.isShowGraph = false;
       }
     }

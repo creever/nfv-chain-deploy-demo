@@ -3,6 +3,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {Server} from "../models/server";
 import {Vnf} from "../models/vnf";
 import {ConsoleService} from "./console.service";
+import {forEach} from "@angular/router/src/utils/collection";
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class NfvEnvironmentService {
     [[1, 2, 3]]
   ];
 
-  private calculatedSwitchingCosts = {};
+  public calculatedSwitchingCosts = {};
 
   constructor(private cs: ConsoleService) {
     this.reset();
@@ -93,6 +94,12 @@ export class NfvEnvironmentService {
             for(let l = 0; l < this.dataStore.servers[k].storedSubChains.length; l++){
               this.dataStore.servers[k].storedSubChains[l]['cost'] = this.generateSwitchingCost(this.dataStore.servers[k].storedSubChains.length);
             }
+          }
+
+          if(j == this.partitions[i].length-1) {
+            const min = 1;
+            const max = 10;
+            this.calculatedSwitchingCosts[i] = Math.floor(Math.random() * (max - min + 1)) + min;
           }
 
           this._servers.next([...this.dataStore.servers]);
@@ -174,5 +181,22 @@ export class NfvEnvironmentService {
   reset() {
     this.setChainLength(this._chainLength);
     this.setServerCount(this._serverCount);
+  }
+
+  get minimumCalculatedSwitchingCosts() {
+    return this.calculatedSwitchingCosts[this.minimumCalculatedSwitchingCostsKey];
+  }
+
+  get minimumCalculatedSwitchingCostsKey() {
+    let min = 10000;
+    let partition;
+
+    for(let i in Object.keys(this.calculatedSwitchingCosts)) {
+      if(this.calculatedSwitchingCosts[i] <= min) {
+        partition = i;
+        min = this.calculatedSwitchingCosts[i];
+      }
+    }
+    return partition;
   }
 }
