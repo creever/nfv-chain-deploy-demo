@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable, of} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {Server} from "../models/server";
 import {Vnf} from "../models/vnf";
+import {ConsoleService} from "./console.service";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import {Vnf} from "../models/vnf";
 export class NfvEnvironmentService {
 
   protected _serverCount = 3;
-  protected _chainLength = 10;
+  protected _chainLength = 4;
 
   protected dataStore = {
     servers: [],
@@ -23,7 +24,17 @@ export class NfvEnvironmentService {
 
   protected chain: Observable<Vnf[]> = this._chain.asObservable();
 
-  constructor() {
+  private partitions = [
+    [[1], [2], [3]],
+    [[1, 2], [3]],
+    [[1, 3], [2]],
+    [[1], [2, 3]],
+    [[1, 2, 3]]
+  ];
+
+  private calculatedSwitchingCosts = {};
+
+  constructor(private cs: ConsoleService) {
     this.reset();
   }
 
@@ -39,15 +50,90 @@ export class NfvEnvironmentService {
     return this._serverCount;
   }
 
-  moveNextVnfToServer(index: number) {
-    if(!this.dataStore.chain.length || 0 > index || index > this.dataStore.servers.length-1)
-      return;
+  generatePartitionSets(length: number) {
 
-    let nextVnf = this.dataStore.chain.pop();
-    nextVnf.cost = Math.floor(Math.random() * 20) + 1;
-    this.dataStore.servers[index].vnfs.push(nextVnf);
-    this._servers.next([...this.dataStore.servers]);
-    this._chain.next([...this.dataStore.chain]);
+    for(let i = 0; i < this.partitions.length; i++) {
+      for(let j = 0; j < this.partitions[i].length; j++) {
+        for(let k = 0; k < this.partitions[i][j].length; k++) {
+          this.partitions[i][j][k] = this.dataStore.chain.find(item => item.id === this.partitions[i][j][k]);
+        }
+      }
+    }
+
+    return this.partitions;
+  }
+
+  get partitionSet() {
+    return this.partitions;
+  }
+
+  moveNextVnfToServer(step: number) {
+    let startStep = 4;
+
+    let currentPartition;
+    for(let i = 0; i < this.partitions.length; i++) {
+      for (let j = 0; j < this.partitions[i].length; j++) {
+        startStep++;
+
+        if(startStep == step) {
+          currentPartition = this.partitions[i][j];
+          currentPartition['active'] = true;
+          console.log(step, currentPartition);
+
+          for(let k = 0; k < this.dataStore.servers.length; k++) {
+            this.dataStore.servers[k].vnfs = [...currentPartition];
+            this.dataStore.servers[k].storedSubChains.push(currentPartition);
+          }
+
+          this._servers.next([...this.dataStore.servers]);
+
+          break;
+        } else {
+          this.partitions[i][j]['active'] = false;
+        }
+      }
+    }
+
+    if (startStep < step) {
+      return {isOver: true};
+    }
+
+    return {isOver: false};
+  }
+
+  F(concurrent = false, copies = 1) {
+    let min = 1;
+    let max = 10;
+
+    if(concurrent) {
+      max = 2;
+      min = 1;
+    }
+
+    return (Math.floor(Math.random() * (max - min + 1)) + min) * copies;
+  }
+
+  calculateDeltaF(copies) {
+    return (copies * this.F() - this.F(true, copies));
+  }
+
+  generateSwitchingCost(copies) {
+    let cost = 0;
+    let deltacost = 0;
+
+    for(let i = 1; i <= copies; i++) {
+      console.log(deltacost, this.calculateDeltaF(copies));
+      deltacost += this.calculateDeltaF(copies);
+    }
+
+    for(let i = 1; i <= copies; i++) {
+      cost += this.F() - (copies - 1);
+    }
+
+    console.log("cost", cost, deltacost, copies);
+    cost *= deltacost / copies;
+
+    return cost;
   }
 
   setServerCount(count: number) {
@@ -55,7 +141,7 @@ export class NfvEnvironmentService {
 
     this.dataStore.servers = [];
     for(let i = 0; i < count; i++) {
-      this.dataStore.servers.push({name: 'Server ' + i, vnfs: []});
+      this.dataStore.servers.push({id: i, name: 'Server ' + i, vnfs: [], storedSubChains: []});
     }
 
     this._servers.next([...this.dataStore.servers]);
@@ -66,10 +152,11 @@ export class NfvEnvironmentService {
 
     this.dataStore.chain = [];
     for(let i = 0; i < length; i++) {
-      this.dataStore.chain.push({name: 'VNF ' + i});
+      this.dataStore.chain.push({id: i, name: 'VNF ' + i});
     }
 
     this._chain.next([...this.dataStore.chain]);
+    this.generatePartitionSets(3);
   }
 
   reset() {
