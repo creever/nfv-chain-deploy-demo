@@ -20,6 +20,8 @@ export class BipartiteGraphComponent implements OnInit {
   link;
   node;
   data;
+  force;
+  label;
 
   ngOnInit() {
     console.log('D3.js version:', d3['version']);
@@ -85,9 +87,11 @@ export class BipartiteGraphComponent implements OnInit {
   }
 
   pushNode(id, group) {
-    this.data.nodes.push({
-      'id': id, 
-      'group': group});
+    if (!this.data.nodes.find(e => e.id === id)) {
+      this.data.nodes.push({
+        'id': id, 
+        'group': group});
+    }
   }
 
   pushLink(source, target, cost) {
@@ -107,7 +111,7 @@ export class BipartiteGraphComponent implements OnInit {
       .attr('stroke', '#ccc')
       .attr('stroke-width', (d) => d['value']);
 
-    this.node = this.svg.append('g')
+      this.node = this.svg.append('g')
       .attr('class', 'node')
       .selectAll('circle')
       .data(data.nodes)
@@ -121,17 +125,11 @@ export class BipartiteGraphComponent implements OnInit {
         .on('end', (d) => { return this.dragEnded(d); })
       );
 
-
-    console.log("node", this.node);
-    var lables = this.node.append("text")
-      .text(function(d) {
-        console.log("sadasdasd", d.id);
-        return d.id;
-      })
-      .attr('x', 6)
-      .attr('y', 3);
-
-    this.node.append('text')
+    this.label = this.svg.select('.node')
+      .selectAll('text')
+      .data(data.nodes)
+      .enter()
+      .append('text')
       .text((d) => { return d.id; });
 
     this.simulation
@@ -148,6 +146,10 @@ export class BipartiteGraphComponent implements OnInit {
       .attr('y1', function(d) { return d['source'].y; })
       .attr('x2', function(d) { return d['target'].x; })
       .attr('y2', function(d) { return d['target'].y; });
+
+      this.label
+        .attr('dx', function(d) { return d['x']; })
+        .attr('dy', function(d) { return d['y']; });
 
     this.node
       .attr('cx', function(d) { return d['x']; })
