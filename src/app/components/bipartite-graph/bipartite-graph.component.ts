@@ -77,6 +77,7 @@ export class BipartiteGraphComponent implements OnInit {
 
     this.resetGraph();
     this.render(this.data);
+    this.ticked();
   }
 
   initData() {
@@ -116,7 +117,7 @@ export class BipartiteGraphComponent implements OnInit {
             if (min.value > x.value) {
               min = x;
             }
-          })
+          });
           min['isMin'] = true;
       });
     });
@@ -165,7 +166,6 @@ export class BipartiteGraphComponent implements OnInit {
 
     this.simulation.force('link')
       .links(data.links);
-
   }
   ticked() {
     this.link
@@ -174,9 +174,9 @@ export class BipartiteGraphComponent implements OnInit {
       .attr('x2', function(d) { return d['target'].x; })
       .attr('y2', function(d) { return d['target'].y; });
 
-      this.label
-        .attr('dx', function(d) { return d['x']; })
-        .attr('dy', function(d) { return d['y']; });
+    this.label
+      .attr('dx', function(d) { return d['x']; })
+      .attr('dy', function(d) { return d['y']; });
 
     this.node
       .attr('cx', function(d) { return d['x']; })
