@@ -21,52 +21,6 @@ export class BipartiteGraphComponent implements OnInit {
   node;
   data;
 
-  test = {
-    'nodes': [
-      {'id': 'server1', 'group': 1},
-      {'id': 'server2', 'group': 1},
-      {'id': 'server3', 'group': 1},
-
-      {'id': 'nfv1', 'group': 2},
-      {'id': 'nfv2', 'group': 2},
-      {'id': 'nfv3', 'group': 2},
-      {'id': 'nfv4', 'group': 2},
-
-      {'id': 'nfv5', 'group': 2},
-      {'id': 'nfv6', 'group': 2},
-      {'id': 'nfv7', 'group': 2},
-      {'id': 'nfv8', 'group': 2}
-    ],
-    'links': [
-      {'source': 'server1', 'target': 'nfv1', 'value': 2},
-      {'source': 'server1', 'target': 'nfv2', 'value': 2},
-      {'source': 'server1', 'target': 'nfv3', 'value': 2},
-      {'source': 'server1', 'target': 'nfv4', 'value': 9},
-      {'source': 'server1', 'target': 'nfv5', 'value': 2},
-      {'source': 'server1', 'target': 'nfv6', 'value': 2},
-      {'source': 'server1', 'target': 'nfv7', 'value': 2},
-      {'source': 'server1', 'target': 'nfv8', 'value': 2},
-
-      {'source': 'server2', 'target': 'nfv1', 'value': 2},
-      {'source': 'server2', 'target': 'nfv2', 'value': 2},
-      {'source': 'server2', 'target': 'nfv3', 'value': 2},
-      {'source': 'server2', 'target': 'nfv4', 'value': 2},
-      {'source': 'server2', 'target': 'nfv5', 'value': 2},
-      {'source': 'server2', 'target': 'nfv6', 'value': 6},
-      {'source': 'server2', 'target': 'nfv7', 'value': 2},
-      {'source': 'server2', 'target': 'nfv8', 'value': 2},
-
-      {'source': 'server3', 'target': 'nfv1', 'value': 2},
-      {'source': 'server3', 'target': 'nfv2', 'value': 2},
-      {'source': 'server3', 'target': 'nfv3', 'value': 2},
-      {'source': 'server3', 'target': 'nfv4', 'value': 2},
-      {'source': 'server3', 'target': 'nfv5', 'value': 2},
-      {'source': 'server3', 'target': 'nfv6', 'value': 2},
-      {'source': 'server3', 'target': 'nfv7', 'value': 2},
-      {'source': 'server3', 'target': 'nfv8', 'value': 2},
-    ]
-  }
-
   ngOnInit() {
     console.log('D3.js version:', d3['version']);
 
@@ -78,14 +32,15 @@ export class BipartiteGraphComponent implements OnInit {
 
   loadForceDirectedGraph() {
     this.svg = d3.select('svg');
-    this.width = 200; // +this.svg.attr('width');
+    this.width = 600; // +this.svg.attr('width');
     this.height = 400; // +this.svg.attr('height');
     this.color = d3.scaleOrdinal(d3.schemeCategory10);
 
     this.simulation = d3.forceSimulation()
       .force('link', d3.forceLink().id((d) => d['id']))
       .force('charge', d3.forceManyBody())
-      .force('center', d3.forceCenter(this.width / 2, this.height / 2));
+      .force('center', d3.forceCenter(this.width / 2, this.height / 2))
+      .force('collide', d3.forceCollide(d => { return 30; }));
 
     this.render(this.initData());
   }
@@ -122,11 +77,16 @@ export class BipartiteGraphComponent implements OnInit {
   }
 
   pushNode(id, group) {
-    this.data.nodes.push({'id': id, 'group': group});
+    this.data.nodes.push({
+      'id': id, 
+      'group': group});
   }
 
   pushLink(source, target, cost) {
-    this.data.links.push({'source': source, 'target': target, 'value': cost});
+    this.data.links.push({
+      'source': source, 
+      'target': target, 
+      'value': cost});
   }
 
   render(data): void {
@@ -148,17 +108,17 @@ export class BipartiteGraphComponent implements OnInit {
       .attr('r', 10)
       .attr('fill', (d) => this.color(d.group))
       .call(d3.drag()
-        .on('start', (d) => {return this.dragStarted(d);})
-        .on('drag', (d) => {return this.dragged(d);})
-        .on('end', (d) => {return this.dragEnded(d);})
+        .on('start', (d) => { return this.dragStarted(d); })
+        .on('drag', (d) => { return this.dragged(d); })
+        .on('end', (d) => { return this.dragEnded(d); })
       );
 
     this.node.append('text')
-      .text((d) => { return d.id});
+      .text((d) => { return d.id; });
 
     this.simulation
       .nodes(data.nodes)
-      .on('tick', ()=>{return this.ticked()});
+      .on('tick', ()=>{ return this.ticked(); });
 
     this.simulation.force('link')
       .links(data.links);
