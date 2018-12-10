@@ -22,10 +22,16 @@
         <li class="nav-item mr-2">
           <button class="btn btn-outline-success" (click)="play()">{{ !ds.isPlaying ? 'Play' : 'Stop' }}</button>
         </li>
-        <li class="nav-item">
+        <li class="nav-item mr-2">
           <button class="btn btn-outline-success" (click)="ds.reset()" [disabled]="ds.isInInitState">Reset</button>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-outline-success" (click)="showConsole()">Show Console</button>
         </li>
       </ul>
     </div>
   </nav>
 </header>
+<div class="console" [ngClass]="{'show' : isShowConsole}">
+  <div *ngFor="let line of cs.consoleLines$ | async" [innerHtml]="line | safe: 'html'"></div>
+</div>

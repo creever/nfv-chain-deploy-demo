@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import * as d3 from 'd3';
+import {NfvEnvironmentService} from "../../services/nfv-environment.service";
 
 @Component({
   selector: 'app-bipartite-graph',
@@ -9,6 +10,8 @@ import * as d3 from 'd3';
 })
 export class BipartiteGraphComponent implements OnInit {
 
+  constructor(private ne: NfvEnvironmentService) {}
+
   svg;
   width;
   height;
@@ -16,71 +19,110 @@ export class BipartiteGraphComponent implements OnInit {
   simulation;
   link;
   node;
-
-  test = {
-    'nodes': [
-      {'id': 'Alice', 'group': 2},
-      {'id': 'Bob', 'group': 3},
-      {'id': 'Cathy', 'group': 4}
-    ],
-    'links': [
-      {'source': 'Alice', 'target': 'Bob', 'value': 2},
-      {'source': 'Bob', 'target': 'Cathy', 'value': 4},
-      {'source': 'Cathy', 'target': 'Alice', 'value': 6},
-    ]
-  }
+  data;
 
   ngOnInit() {
     console.log('D3.js version:', d3['version']);
 
     this.loadForceDirectedGraph();
+
+    this.bind();
   }
   // Rendering
 
   loadForceDirectedGraph() {
     this.svg = d3.select('svg');
-    this.width = 200; // +this.svg.attr('width');
+    this.width = 600; // +this.svg.attr('width');
     this.height = 400; // +this.svg.attr('height');
     this.color = d3.scaleOrdinal(d3.schemeCategory10);
 
     this.simulation = d3.forceSimulation()
       .force('link', d3.forceLink().id((d) => d['id']))
       .force('charge', d3.forceManyBody())
-      .force('center', d3.forceCenter(this.width / 2, this.height / 2));
+      .force('center', d3.forceCenter(this.width / 2, this.height / 2))
+      .force('collide', d3.forceCollide(d => { return 30; }));
 
-    this.render(this.test);
+    this.render(this.initData());
+  }
+
+  bind() {
+    this.ne.servers$.subscribe((servers) => {
+      this.updateGraph(servers);
+    });
+
+  }
+
+  updateGraph(servers) {
+    this.data = this.initData();
+
+    servers.forEach((server, index) => {
+      this.pushNode(server.name, 10);
+      if (server.vnfs.length) {
+        server.vnfs.forEach(vnf => {
+          this.pushNode(vnf.name, 20);
+          this.pushLink(server.name, vnf.name, vnf.cost);
+        });
+      }
+    });
+
+    this.resetGraph();
+    this.render(this.data);
+  }
+
+  initData() {
+    return {
+      'nodes': [],
+      'links': []
+    };
+  }
+
+  pushNode(id, group) {
+    this.data.nodes.push({
+      'id': id, 
+      'group': group});
+  }
+
+  pushLink(source, target, cost) {
+    this.data.links.push({
+      'source': source, 
+      'target': target, 
+      'value': cost});
   }
 
   render(data): void {
     this.link = this.svg.append('g')
-      .attr('class', 'links')
+      .attr('class', 'link')
       .selectAll('line')
-      .data(data['links'])
+      .data(data.links)
       .enter()
       .append('line')
-      .attr('stroke-width', (d) => Math.sqrt(d['value']));
+      .attr('stroke', '#ccc')
+      .attr('stroke-width', (d) => d['value']);
 
     this.node = this.svg.append('g')
-      .attr('class', 'nodes')
+      .attr('class', 'node')
       .selectAll('circle')
-      .data(data['nodes'])
+      .data(data.nodes)
       .enter()
       .append('circle')
       .attr('r', 10)
-      .attr('fill', (d) => this.color(d['group']))
+      .attr('fill', (d) => this.color(d.group))
       .call(d3.drag()
-        .on('start', (d) => {return this.dragStarted(d);})
-        .on('drag', (d) => {return this.dragged(d);})
-        .on('end', (d) => {return this.dragEnded(d);})
+        .on('start', (d) => { return this.dragStarted(d); })
+        .on('drag', (d) => { return this.dragged(d); })
+        .on('end', (d) => { return this.dragEnded(d); })
       );
-    this.node.append('title')
-      .text( (d) => { return d.id});
+
+    this.node.append('text')
+      .text((d) => { return d.id; });
+
     this.simulation
       .nodes(data.nodes)
-      .on("tick", ()=>{return this.ticked()});
+      .on('tick', ()=>{ return this.ticked(); });
 
-    this.simulation.force("link")
+    this.simulation.force('link')
       .links(data.links);
+
   }
   ticked() {
     this.link
@@ -92,6 +134,10 @@ export class BipartiteGraphComponent implements OnInit {
     this.node
       .attr('cx', function(d) { return d['x']; })
       .attr('cy', function(d) { return d['y']; });
+  }
+
+  resetGraph() {
+    this.svg.selectAll('*').remove();
   }
 
   dragStarted(d): void {
