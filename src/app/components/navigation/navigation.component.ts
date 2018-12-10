@@ -3,6 +3,7 @@ import {DemonstrationService} from "../../services/demonstration.service";
 import {FormControl} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {NfvEnvironmentService} from "../../services/nfv-environment.service";
+import {ConsoleService} from "../../services/console.service";
 
 @Component({
   selector: 'app-navigation',
@@ -19,7 +20,9 @@ export class NavigationComponent implements OnInit, OnDestroy {
   chainLength: FormControl = new FormControl(10);
   subscriptions: Subscription = new Subscription();
 
-  constructor(private ds: DemonstrationService, private ne: NfvEnvironmentService) {
+  isShowConsole = false;
+
+  constructor(public ds: DemonstrationService, private ne: NfvEnvironmentService, private cs: ConsoleService) {
     this.subscriptions.add(this.serverCount.valueChanges.subscribe(value => this.ne.setServerCount(value)));
     this.subscriptions.add(this.chainLength.valueChanges.subscribe(value => this.ne.setChainLength(value)));
   }
@@ -39,6 +42,10 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  showConsole() {
+    this.isShowConsole = !this.isShowConsole;
   }
 
 

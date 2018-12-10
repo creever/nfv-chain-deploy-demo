@@ -13,7 +13,7 @@ export enum KEY_CODE {
   selector: 'app-deployment-chain',
   templateUrl: './deployment-chain.component.html',
   styleUrls: ['./deployment-chain.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  //changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DeploymentChainComponent implements OnInit, OnDestroy {
 
@@ -22,7 +22,7 @@ export class DeploymentChainComponent implements OnInit, OnDestroy {
   constructor(public ds: DemonstrationService, public ne: NfvEnvironmentService) {
     this.subscriptions.add(
       ds.currentStep$.subscribe(step => {
-        this.nextStep();
+        this.nextStep(step);
       }
     ));
   }
@@ -30,13 +30,19 @@ export class DeploymentChainComponent implements OnInit, OnDestroy {
   ngOnInit() {
     //console.log(this.getAllPartitions([], [1,2,3]));
     //this.Bell(5, console.log);
-    this.init(4, [], []);
+    // this.init(4, [], []);
   }
 
-  nextStep() {
-    const max = this.ne.serverCount-1;
-    const min = 0;
-    this.ne.moveNextVnfToServer(Math.floor(Math.random() * (max - min + 1)) + min );
+  nextStep(step) {
+    if(this.ds.isIteratingPartitions) {
+      if(this.ne.moveNextVnfToServer(step).isOver) {
+        this.ds.isIteratingPartitions = false;
+      }
+    }
+  }
+
+  calculateSwitchingCost() {
+    return 0;
   }
 
   private init(n: number, arr1: Array<number>, arr2: Array<number>) {

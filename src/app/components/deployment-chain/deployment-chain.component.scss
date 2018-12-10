@@ -1,14 +1,14 @@
 :host {
   display: block;
-  height: calc(100vh - 56px);
+  // height: calc(100vh - 56px);
   position: relative;
 }
 
-.servers {
+.servers, .partition-sets {
   padding-top: 15px;
 }
 
-.server {
+.server, .partition-set {
   background-color: #f1f1f1;
   border: 1px solid #eeeeee;
   margin-bottom: 15px;
@@ -26,6 +26,22 @@
     margin-top: -25px;
     margin-left: -150px;
     text-align: center;
+  }
+
+  .partition {
+    float: left;
+    padding-left: 15px;
+    border-left: 3px solid #28a745;
+
+    &:first-child {
+      margin-left: 0;
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    &.active .vnf {
+      background-color: orangered;
+    }
   }
 }
 
